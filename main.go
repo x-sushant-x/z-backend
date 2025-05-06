@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 	"github.com/x-sushant-x/Zocket/config"
 	"github.com/x-sushant-x/Zocket/controller"
 	"github.com/x-sushant-x/Zocket/model"
@@ -13,6 +14,14 @@ import (
 	"github.com/x-sushant-x/Zocket/service"
 	"github.com/x-sushant-x/Zocket/socket"
 )
+
+func init() {
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("unable to load .env file")
+	}
+}
 
 func main() {
 	app := fiber.New()
