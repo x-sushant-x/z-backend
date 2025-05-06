@@ -16,11 +16,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Fatal("unable to load .env file")
-	}
+	godotenv.Load()
 }
 
 func main() {
