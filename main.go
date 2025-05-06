@@ -27,7 +27,7 @@ func main() {
 	config.DB.AutoMigrate(&model.Task{})
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000",
+		AllowOrigins:     "http://localhost:3000, https://z-frontend-kappa.vercel.app",
 		AllowHeaders:     "*",
 		AllowCredentials: true,
 	}))
