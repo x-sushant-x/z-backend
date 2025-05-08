@@ -5,16 +5,16 @@ import (
 	"errors"
 
 	"github.com/x-sushant-x/Zocket/model"
-	"github.com/x-sushant-x/Zocket/repository"
+	iRepo "github.com/x-sushant-x/Zocket/repository/interface"
 	"github.com/x-sushant-x/Zocket/socket"
 )
 
 type TaskService struct {
-	taskRepo repository.TaskRepo
+	taskRepo iRepo.ITaskRepository
 	wsClient *socket.WebSocketClient
 }
 
-func NewTaskService(taskRepo repository.TaskRepo, wsClient *socket.WebSocketClient) TaskService {
+func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketClient) TaskService {
 	return TaskService{
 		taskRepo: taskRepo,
 		wsClient: wsClient,

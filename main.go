@@ -10,7 +10,7 @@ import (
 	"github.com/x-sushant-x/Zocket/config"
 	"github.com/x-sushant-x/Zocket/controller"
 	"github.com/x-sushant-x/Zocket/model"
-	"github.com/x-sushant-x/Zocket/repository"
+	repository "github.com/x-sushant-x/Zocket/repository/implementation"
 	"github.com/x-sushant-x/Zocket/service"
 	"github.com/x-sushant-x/Zocket/socket"
 )

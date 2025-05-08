@@ -9,8 +9,8 @@ type TaskRepo struct {
 	db *gorm.DB
 }
 
-func NewTaskRepo(db *gorm.DB) TaskRepo {
-	return TaskRepo{db: db}
+func NewTaskRepo(db *gorm.DB) *TaskRepo {
+	return &TaskRepo{db: db}
 }
 
 func (r *TaskRepo) CreateTask(task *model.Task) (*model.Task, error) {

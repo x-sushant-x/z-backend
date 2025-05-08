@@ -2,14 +2,14 @@ package service
 
 import (
 	"github.com/x-sushant-x/Zocket/model"
-	"github.com/x-sushant-x/Zocket/repository"
+	iRepo "github.com/x-sushant-x/Zocket/repository/interface"
 )
 
 type UserService struct {
-	userRepo repository.UserRepo
+	userRepo iRepo.IUserRepository
 }
 
-func NewUserService(userRepo repository.UserRepo) UserService {
+func NewUserService(userRepo iRepo.IUserRepository) UserService {
 	return UserService{
 		userRepo: userRepo,
 	}

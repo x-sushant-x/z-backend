@@ -4,16 +4,16 @@ import (
 	"errors"
 
 	"github.com/x-sushant-x/Zocket/model"
-	"github.com/x-sushant-x/Zocket/repository"
+	iRepo "github.com/x-sushant-x/Zocket/repository/interface"
 	"github.com/x-sushant-x/Zocket/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService struct {
-	userRepo repository.UserRepo
+	userRepo iRepo.IUserRepository
 }
 
-func NewAuthService(userRepo repository.UserRepo) AuthService {
+func NewAuthService(userRepo iRepo.IUserRepository) AuthService {
 	return AuthService{
 		userRepo: userRepo,
 	}
