@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/x-sushant-x/Zocket/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -26,4 +27,9 @@ func ConnectDB() {
 
 	DB = db
 	fmt.Println("Database connected!")
+}
+
+func AutoMigrateDB() {
+	DB.AutoMigrate(&model.User{})
+	DB.AutoMigrate(&model.Task{})
 }

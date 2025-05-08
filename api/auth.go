@@ -1,10 +1,9 @@
-package controller
+package api
 
 import (
-	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/x-sushant-x/Zocket/service"
+	"github.com/x-sushant-x/Zocket/utils"
 )
 
 type AuthRequest struct {
@@ -26,36 +25,33 @@ func NewAuthController(authService service.AuthService) AuthController {
 func (con AuthController) Signup(c *fiber.Ctx) error {
 	var req AuthRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+		return utils.SendApiError(c, "Invalid Input", fiber.StatusBadRequest)
 	}
 
 	err := con.authService.Signup(req.Name, req.Email, req.Password)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return utils.SendApiError(c, err.Error(), fiber.StatusBadRequest)
+
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Signup successful"})
+	return utils.SendApiSuccess(c, "Success", "Account Created")
 }
 
 func (con AuthController) Login(c *fiber.Ctx) error {
 	var req AuthRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+		return utils.SendApiError(c, "Invalid Input", fiber.StatusBadRequest)
 	}
 
 	token, err := con.authService.Login(req.Email, req.Password)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+		return utils.SendApiError(c, err.Error(), fiber.StatusBadRequest)
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:     "jwt_token",
-		Value:    token,
-		HTTPOnly: true,
-		Secure:   false,
-		SameSite: "Strict",
-		Expires:  time.Now().Add(24 * time.Hour),
+		Name:  "token",
+		Value: token,
 	})
 
-	return c.JSON(fiber.Map{"token": token})
+	return utils.SendApiSuccess(c, "Success", token)
 }

@@ -45,12 +45,12 @@ func (s AuthService) Login(email, password string) (string, error) {
 
 	user, err := s.userRepo.FindUserByEmail(email)
 	if err != nil {
-		return "", errors.New("invalid credentials")
+		return "", err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("invalid credentials")
+		return "", errors.New("invalid password")
 	}
 
 	token, err := utils.GenerateJWT(user.ID)

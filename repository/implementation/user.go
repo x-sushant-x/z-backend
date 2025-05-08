@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/x-sushant-x/Zocket/model"
@@ -18,13 +19,29 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 }
 
 func (u UserRepo) CreateUser(user *model.User) error {
-	return u.db.Create(user).Error
+	existingUser, err := u.FindUserByEmail(user.Email)
+	if err == nil && existingUser != nil {
+		return fmt.Errorf("user with email %s already exists", user.Email)
+	}
+
+	if err := u.db.Create(user).Error; err != nil {
+		return fmt.Errorf("failed to create user: %w", err)
+	}
+	return nil
 }
 
 func (u UserRepo) FindUserByEmail(email string) (*model.User, error) {
 	var user model.User
 	result := u.db.Where("email = ?", email).First(&user)
-	return &user, result.Error
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("user with email %s not found", email)
+		}
+		return nil, result.Error
+	}
+
+	return &user, nil
 }
 
 func (u UserRepo) GetAllUsers() []model.User {
