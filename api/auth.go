@@ -49,8 +49,12 @@ func (con AuthController) Login(c *fiber.Ctx) error {
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:  "token",
-		Value: token,
+		Name:     "token",
+		Value:    token,
+		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "None",
+		Path:     "/",
 	})
 
 	return utils.SendApiSuccess(c, "Success", token)
