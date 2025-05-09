@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/x-sushant-x/Zocket/service"
+	"github.com/x-sushant-x/Zocket/utils"
 )
 
 type UserController struct {
@@ -18,12 +19,9 @@ func NewUserController(userService service.UserService) UserController {
 func (con UserController) GetAllUsers(c *fiber.Ctx) error {
 	users, err := con.userService.GetAllUsers()
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to fetch users",
-		})
+		return utils.SendApiError(c, "Failed to fetch users", fiber.StatusInternalServerError)
+
 	}
 
-	return c.JSON(fiber.Map{
-		"users": users,
-	})
+	return utils.SendApiSuccess(c, "Users Fetched", users)
 }

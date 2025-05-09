@@ -2,15 +2,10 @@ package api
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/x-sushant-x/Zocket/requests"
 	"github.com/x-sushant-x/Zocket/service"
 	"github.com/x-sushant-x/Zocket/utils"
 )
-
-type AuthRequest struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
 
 type AuthController struct {
 	authService service.AuthService
@@ -23,12 +18,18 @@ func NewAuthController(authService service.AuthService) AuthController {
 }
 
 func (con AuthController) Signup(c *fiber.Ctx) error {
-	var req AuthRequest
+	var req requests.AuthRequest
 	if err := c.BodyParser(&req); err != nil {
 		return utils.SendApiError(c, "Invalid Input", fiber.StatusBadRequest)
 	}
 
-	err := con.authService.Signup(req.Name, req.Email, req.Password)
+	err := req.Validate(true)
+	if err != nil {
+		return utils.SendApiError(c, err.Error(), fiber.StatusBadRequest)
+
+	}
+
+	err = con.authService.Signup(req.Name, req.Email, req.Password)
 	if err != nil {
 		return utils.SendApiError(c, err.Error(), fiber.StatusBadRequest)
 
@@ -38,9 +39,15 @@ func (con AuthController) Signup(c *fiber.Ctx) error {
 }
 
 func (con AuthController) Login(c *fiber.Ctx) error {
-	var req AuthRequest
+	var req requests.AuthRequest
 	if err := c.BodyParser(&req); err != nil {
 		return utils.SendApiError(c, "Invalid Input", fiber.StatusBadRequest)
+	}
+
+	err := req.Validate(false)
+	if err != nil {
+		return utils.SendApiError(c, err.Error(), fiber.StatusBadRequest)
+
 	}
 
 	token, err := con.authService.Login(req.Email, req.Password)
