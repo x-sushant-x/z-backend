@@ -31,7 +31,9 @@ func (con TaskController) CreateTask(c *fiber.Ctx) error {
 }
 
 func (con TaskController) GetAllTasks(c *fiber.Ctx) error {
-	tasks, err := con.taskService.GetAllTasks()
+	status := c.Query("status")
+
+	tasks, err := con.taskService.GetAllTasks(status)
 	if err != nil {
 		return utils.SendApiError(c, err.Error(), fiber.StatusInternalServerError)
 	}

@@ -54,7 +54,7 @@ func StartServer() {
 
 	{
 		taskRepo := repository.NewTaskRepo(config.DB)
-		taskServce := service.NewTaskService(taskRepo, webSocketClient)
+		taskServce := service.NewTaskService(taskRepo, webSocketClient, userRepo)
 		taskController := NewTaskController(taskServce)
 
 		task := api.Group("/task")

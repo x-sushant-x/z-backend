@@ -6,4 +6,5 @@ type IUserRepository interface {
 	CreateUser(user *model.User) error
 	FindUserByEmail(email string) (*model.User, error)
 	GetAllUsers() []model.User
+	GetUsersWithStats() []model.UsersTaskStat
 }

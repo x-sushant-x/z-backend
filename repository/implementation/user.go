@@ -55,3 +55,15 @@ func (u UserRepo) GetAllUsers() []model.User {
 
 	return users
 }
+
+func (u UserRepo) GetUsersWithStats() []model.UsersTaskStat {
+	var stats []model.UsersTaskStat
+
+	u.db.Model(&model.User{}).
+		Select("users.name, COUNT(tasks.id) AS total_tasks_assigned, COALESCE(SUM(tasks.estimated_hours), 0) AS estimated_hours").
+		Joins("LEFT JOIN tasks ON tasks.assigned_to = users.id").
+		Group("users.id").
+		Scan(&stats)
+
+	return stats
+}

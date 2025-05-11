@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/x-sushant-x/Zocket/constants"
+	customErrors "github.com/x-sushant-x/Zocket/errors"
 	"github.com/x-sushant-x/Zocket/model"
 	iRepo "github.com/x-sushant-x/Zocket/repository/interface"
 	"github.com/x-sushant-x/Zocket/socket"
@@ -12,12 +14,14 @@ import (
 type TaskService struct {
 	taskRepo iRepo.ITaskRepository
 	wsClient *socket.WebSocketClient
+	userRepo iRepo.IUserRepository
 }
 
-func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketClient) TaskService {
+func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketClient, userRepo iRepo.IUserRepository) TaskService {
 	return TaskService{
 		taskRepo: taskRepo,
 		wsClient: wsClient,
+		userRepo: userRepo,
 	}
 }
 
@@ -46,8 +50,8 @@ func (s TaskService) CreateTask(description, status string, assignedTo uint) err
 	return nil
 }
 
-func (s TaskService) GetAllTasks() ([]model.Task, error) {
-	return s.taskRepo.GetAllTasks()
+func (s TaskService) GetAllTasks(status string) ([]model.Task, error) {
+	return s.taskRepo.GetAllTasks(status)
 }
 
 func (s TaskService) UpdateTaskStatus(taskID uint, newStatus string) error {
@@ -71,4 +75,36 @@ func (s TaskService) UpdateTaskStatus(taskID uint, newStatus string) error {
 	}
 
 	return nil
+}
+
+func (s TaskService) GetTasksStatus() (*model.TasksStats, error) {
+	toDoTasks, err := s.taskRepo.GetAllTasks(constants.Task_ToDo)
+
+	if err != nil {
+		return nil, customErrors.ErrUnableToFetchTask
+	}
+
+	tasks := parseTasks(toDoTasks)
+
+	users := s.userRepo.GetUsersWithStats()
+
+	return &model.TasksStats{
+		UsersStats:   users,
+		NewTaskStats: tasks,
+	}, nil
+}
+
+func parseTasks(toDoTasks []model.Task) []model.NewTasksStats {
+	tasks := []model.NewTasksStats{}
+
+	for _, task := range toDoTasks {
+		taskStat := model.NewTasksStats{
+			Title:          task.Description,
+			EstimatedHours: task.EstimatedHours,
+		}
+
+		tasks = append(tasks, taskStat)
+	}
+
+	return tasks
 }

@@ -26,9 +26,15 @@ func (r *TaskRepo) CreateTask(task *model.Task) (*model.Task, error) {
 	return &createdTask, nil
 }
 
-func (r *TaskRepo) GetAllTasks() ([]model.Task, error) {
+func (r *TaskRepo) GetAllTasks(status string) ([]model.Task, error) {
 	var tasks []model.Task
-	err := r.db.Preload("User").Find(&tasks).Error
+	query := r.db.Preload("User")
+
+	if status != "" {
+		query = query.Where("status = ?", status).Order("created_at DESC")
+	}
+
+	err := query.Find(&tasks).Error
 	return tasks, err
 }
 
