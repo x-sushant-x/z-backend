@@ -54,7 +54,7 @@ func StartServer() {
 	}
 
 	{
-		aiSuggestionSvc := ai.NewOpenAISvc(config.OpenAIClient)
+		aiSuggestionSvc := ai.NewGeminiService(config.GeminiAPIClient)
 
 		taskRepo := repository.NewTaskRepo(config.DB)
 		taskService := service.NewTaskService(taskRepo, webSocketClient, userRepo, aiSuggestionSvc)

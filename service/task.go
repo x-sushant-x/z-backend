@@ -114,15 +114,15 @@ func parseTasks(toDoTasks []model.Task) []model.NewTasksStats {
 	return tasks
 }
 
-func (s TaskService) SuggestTasks() ([]model.TaskAssignment, error) {
+func (s TaskService) SuggestTasks() (string, error) {
 	stats, err := s.getTaskStats()
 	if err != nil {
-		return nil, customErrors.ErrInternalServerError
+		return "", customErrors.ErrInternalServerError
 	}
 
 	suggestions, err := s.aiSuggestions.SuggestTasks(stats)
 	if err != nil {
-		return nil, customErrors.ErrInternalServerError
+		return "", customErrors.ErrInternalServerError
 	}
 
 	return suggestions, nil

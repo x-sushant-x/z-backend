@@ -15,6 +15,7 @@ func main() {
 	config.AutoMigrateDB()
 
 	config.NewOpenAIClient()
+	config.NewGeminiClient()
 
 	api.StartServer()
 }
