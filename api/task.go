@@ -55,3 +55,12 @@ func (con TaskController) UpdateTaskStatus(c *fiber.Ctx) error {
 
 	return utils.SendApiSuccess(c, "Success", "Task Updated")
 }
+
+func (con TaskController) SuggestTasks(c *fiber.Ctx) error {
+	suggestions, err := con.taskService.SuggestTasks()
+	if err != nil {
+		return utils.SendApiError(c, err.Error(), fiber.StatusInternalServerError)
+	}
+
+	return utils.SendApiSuccess(c, "Success", suggestions)
+}

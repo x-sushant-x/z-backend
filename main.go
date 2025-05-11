@@ -14,5 +14,7 @@ func main() {
 	config.ConnectDB()
 	config.AutoMigrateDB()
 
+	config.NewOpenAIClient()
+
 	api.StartServer()
 }

@@ -28,3 +28,8 @@ type NewTasksStats struct {
 	Title          string `json:"title"`
 	EstimatedHours int    `json:"estimatedHours"`
 }
+
+type TaskAssignment struct {
+	User string `json:"user"`
+	Task string `json:"task"`
+}

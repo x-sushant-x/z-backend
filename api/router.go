@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/x-sushant-x/Zocket/ai"
 	"log"
 
 	"github.com/gofiber/contrib/websocket"
@@ -53,14 +54,17 @@ func StartServer() {
 	}
 
 	{
+		aiSuggestionSvc := ai.NewOpenAISvc(config.OpenAIClient)
+
 		taskRepo := repository.NewTaskRepo(config.DB)
-		taskServce := service.NewTaskService(taskRepo, webSocketClient, userRepo)
-		taskController := NewTaskController(taskServce)
+		taskService := service.NewTaskService(taskRepo, webSocketClient, userRepo, aiSuggestionSvc)
+		taskController := NewTaskController(taskService)
 
 		task := api.Group("/task")
 		task.Post("/", taskController.CreateTask)
 		task.Get("/list", taskController.GetAllTasks)
 		task.Put("/status", taskController.UpdateTaskStatus)
+		task.Get("/suggest", taskController.SuggestTasks)
 	}
 
 	app.Get("/ws", websocket.New(func(conn *websocket.Conn) {

@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"github.com/x-sushant-x/Zocket/ai"
 
 	"github.com/x-sushant-x/Zocket/constants"
 	customErrors "github.com/x-sushant-x/Zocket/errors"
@@ -12,16 +13,18 @@ import (
 )
 
 type TaskService struct {
-	taskRepo iRepo.ITaskRepository
-	wsClient *socket.WebSocketClient
-	userRepo iRepo.IUserRepository
+	taskRepo      iRepo.ITaskRepository
+	wsClient      *socket.WebSocketClient
+	userRepo      iRepo.IUserRepository
+	aiSuggestions ai.Suggestions
 }
 
-func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketClient, userRepo iRepo.IUserRepository) TaskService {
+func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketClient, userRepo iRepo.IUserRepository, aiSuggestions ai.Suggestions) TaskService {
 	return TaskService{
-		taskRepo: taskRepo,
-		wsClient: wsClient,
-		userRepo: userRepo,
+		taskRepo:      taskRepo,
+		wsClient:      wsClient,
+		userRepo:      userRepo,
+		aiSuggestions: aiSuggestions,
 	}
 }
 
@@ -77,7 +80,7 @@ func (s TaskService) UpdateTaskStatus(taskID uint, newStatus string) error {
 	return nil
 }
 
-func (s TaskService) GetTasksStatus() (*model.TasksStats, error) {
+func (s TaskService) getTaskStats() (*model.TasksStats, error) {
 	toDoTasks, err := s.taskRepo.GetAllTasks(constants.Task_ToDo)
 
 	if err != nil {
@@ -107,4 +110,18 @@ func parseTasks(toDoTasks []model.Task) []model.NewTasksStats {
 	}
 
 	return tasks
+}
+
+func (s TaskService) SuggestTasks() ([]model.TaskAssignment, error) {
+	stats, err := s.getTaskStats()
+	if err != nil {
+		return nil, customErrors.ErrInternalServerError
+	}
+
+	suggestions, err := s.aiSuggestions.SuggestTasks(stats)
+	if err != nil {
+		return nil, customErrors.ErrInternalServerError
+	}
+
+	return suggestions, nil
 }
