@@ -8,8 +8,8 @@ type Task struct {
 	gorm.Model
 	Description    string `json:"description"`
 	Status         string `json:"status"`
-	AssignedTo     uint   `json:"assignedTo"`
-	User           User   `gorm:"foreignKey:AssignedTo" json:"user"`
+	AssignedTo     *uint  `json:"assignedTo"`
+	User           *User  `gorm:"foreignKey:AssignedTo" json:"user"`
 	EstimatedHours int    `json:"estimatedHours"` // Days
 }
 

@@ -28,7 +28,7 @@ func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketCl
 	}
 }
 
-func (s TaskService) CreateTask(description, status string, assignedTo uint) error {
+func (s TaskService) CreateTask(description, status string, assignedTo *uint) error {
 	if description == "" || status == "" {
 		return errors.New("all fields are required")
 	}

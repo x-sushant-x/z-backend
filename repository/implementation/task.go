@@ -31,8 +31,10 @@ func (r *TaskRepo) GetAllTasks(status string) ([]model.Task, error) {
 	query := r.db.Preload("User")
 
 	if status != "" {
-		query = query.Where("status = ?", status).Order("created_at DESC")
+		query = query.Where("status = ?", status)
 	}
+
+	query = query.Order("created_at DESC")
 
 	err := query.Find(&tasks).Error
 	return tasks, err
