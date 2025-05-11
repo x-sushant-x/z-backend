@@ -1,9 +1,10 @@
 package requests
 
 type TaskRequest struct {
-	Description string `json:"description"`
-	Status      string `json:"status"`
-	AssignedTo  *uint  `json:"assignedTo"`
+	Description    string `json:"description"`
+	Status         string `json:"status"`
+	AssignedTo     *uint  `json:"assignedTo"`
+	EstimatedHours int    `json:"estimatedHours"`
 }
 
 type UpdateStatusRequest struct {

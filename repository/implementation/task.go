@@ -52,3 +52,8 @@ func (r *TaskRepo) GetTaskByID(id uint) (*model.Task, error) {
 	}
 	return &task, nil
 }
+
+func (r *TaskRepo) AssignTask(taskID uint, userId uint) error {
+	result := r.db.Model(&model.Task{}).Where("id = ?", taskID).Update("assigned_to", userId)
+	return result.Error
+}

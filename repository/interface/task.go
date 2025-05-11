@@ -7,4 +7,5 @@ type ITaskRepository interface {
 	GetAllTasks(status string) ([]model.Task, error)
 	UpdateTaskStatus(taskID uint, newStatus string) error
 	GetTaskByID(id uint) (*model.Task, error)
+	AssignTask(taskID uint, userId uint) error
 }

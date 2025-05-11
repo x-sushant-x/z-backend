@@ -65,6 +65,7 @@ func StartServer() {
 		task.Get("/list", taskController.GetAllTasks)
 		task.Put("/status", taskController.UpdateTaskStatus)
 		task.Get("/suggest", taskController.SuggestTasks)
+		task.Put("/assign", taskController.AssignTask)
 	}
 
 	app.Get("/ws", websocket.New(func(conn *websocket.Conn) {

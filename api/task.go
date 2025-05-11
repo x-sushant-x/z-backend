@@ -22,7 +22,7 @@ func (con TaskController) CreateTask(c *fiber.Ctx) error {
 
 	}
 
-	err := con.taskService.CreateTask(req.Description, req.Status, req.AssignedTo)
+	err := con.taskService.CreateTask(&req)
 	if err != nil {
 		return utils.SendApiError(c, err.Error(), fiber.StatusInternalServerError)
 	}
@@ -63,4 +63,27 @@ func (con TaskController) SuggestTasks(c *fiber.Ctx) error {
 	}
 
 	return utils.SendApiSuccess(c, "Success", suggestions)
+}
+
+func (con TaskController) AssignTask(c *fiber.Ctx) error {
+	taskId := c.Query("taskId")
+	userId := c.Query("userId")
+
+	if taskId == "" || userId == "" {
+		return utils.SendApiError(c, "taskId & userId must be provided in query params.", fiber.StatusBadRequest)
+	}
+
+	taskIdInt, err := utils.StringToUint(taskId)
+	userIdInt, err := utils.StringToUint(userId)
+
+	if err != nil {
+		return utils.SendApiError(c, "make sure provided params are valid", fiber.StatusBadRequest)
+	}
+
+	err = con.taskService.AssignTask(taskIdInt, userIdInt)
+	if err != nil {
+		return utils.SendApiError(c, err.Error(), fiber.StatusBadRequest)
+	}
+
+	return utils.SendApiSuccess(c, "Success", "Task Assigned Successfully")
 }

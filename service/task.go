@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/x-sushant-x/Zocket/ai"
+	"github.com/x-sushant-x/Zocket/requests"
 
 	"github.com/x-sushant-x/Zocket/constants"
 	customErrors "github.com/x-sushant-x/Zocket/errors"
@@ -28,15 +29,16 @@ func NewTaskService(taskRepo iRepo.ITaskRepository, wsClient *socket.WebSocketCl
 	}
 }
 
-func (s TaskService) CreateTask(description, status string, assignedTo *uint) error {
-	if description == "" || status == "" {
+func (s TaskService) CreateTask(taskReq *requests.TaskRequest) error {
+	if taskReq.Description == "" || taskReq.Status == "" || taskReq.EstimatedHours == 0 {
 		return errors.New("all fields are required")
 	}
 
 	task := &model.Task{
-		Description: description,
-		Status:      status,
-		AssignedTo:  assignedTo,
+		Description:    taskReq.Description,
+		Status:         taskReq.Status,
+		AssignedTo:     taskReq.AssignedTo,
+		EstimatedHours: taskReq.EstimatedHours,
 	}
 
 	createdTask, err := s.taskRepo.CreateTask(task)
@@ -124,4 +126,8 @@ func (s TaskService) SuggestTasks() ([]model.TaskAssignment, error) {
 	}
 
 	return suggestions, nil
+}
+
+func (s TaskService) AssignTask(taskId uint, userId uint) error {
+	return s.taskRepo.AssignTask(taskId, userId)
 }
