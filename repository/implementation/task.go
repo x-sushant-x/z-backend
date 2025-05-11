@@ -38,7 +38,7 @@ func (r *TaskRepo) GetAllTasks(status string) ([]model.Task, error) {
 	return tasks, err
 }
 
-func (r TaskRepo) UpdateTaskStatus(taskID uint, newStatus string) error {
+func (r *TaskRepo) UpdateTaskStatus(taskID uint, newStatus string) error {
 	result := r.db.Model(&model.Task{}).Where("id = ?", taskID).Update("status", newStatus)
 	return result.Error
 }
